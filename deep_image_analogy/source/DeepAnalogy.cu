@@ -464,7 +464,6 @@ void DeepAnalogy::ComputeAnn() {
 		norm(Ndata_AP, data_AP[curr_layer], NULL, data_A_size[curr_layer]);
 		norm(Ndata_B, data_B[curr_layer], NULL, data_B_size[curr_layer]);
 
-		Mat out, corr_AB, corr_BA; 
 		//patchmatch
 		cout << "Finding nearest neighbor field using PatchMatch Algorithm at layer:" << params.layers[curr_layer] << ".\n";
 		patchmatch << <blocksPerGridAB, threadsPerBlockAB >> >(Ndata_AP, Ndata_BP, Ndata_A, Ndata_B, ann_device_AB, annd_device_AB, params_device_AB);
@@ -478,19 +477,18 @@ void DeepAnalogy::ComputeAnn() {
 		cudaFree(response_BP);
 
 		// TEST: Output correspondence 
+		Mat out; 
 		cout << "Saving correspondence AB..."<< ".\n";
-		corr_AB = reconstruct_avg(img_AL, img_BPL, ann_device_AB, sizes[curr_layer]);
-		cv::resize(corr_AB, out, Size(), (float)ori_A_cols / cur_A_cols, (float)ori_A_rows / cur_A_rows, INTER_CUBIC);
-		sprintf(fname, "corr_AB.png");
+		// corr_AB = reconstruct_avg(img_AL, img_BPL, ann_device_AB, sizes[curr_layer]);
+		cv::resize(Ndata_AP, out, Size(), (float)ori_A_cols / cur_A_cols, (float)ori_A_rows / cur_A_rows, INTER_CUBIC);
+		sprintf(fname, "Ndata_AP.png");
 		imwrite(path_output + fname, out);
-		cudaFree(out);
 		
-		cout << "Saving correspondence BA..."<< ".\n";
-		corr_BA = reconstruct_avg(img_BPL, img_AL, ann_device_BA, sizes[curr_layer]);
-		cv::resize(corr_BA, out, Size(), (float)ori_BP_cols / cur_BP_cols, (float)ori_BP_rows / cur_BP_rows, INTER_CUBIC);
-		sprintf(fname, "corr_BA.png");
-		imwrite(path_output + fname, out);
-		udaFree(out);
+		// cout << "Saving correspondence BA..."<< ".\n";
+		// corr_BA = reconstruct_avg(img_BPL, img_AL, ann_device_BA, sizes[curr_layer]);
+		// cv::resize(corr_BA, out, Size(), (float)ori_BP_cols / cur_BP_cols, (float)ori_BP_rows / cur_BP_rows, INTER_CUBIC);
+		// sprintf(fname, "corr_BA.png");
+		// imwrite(path_output + fname, out);
 
 
 		//deconv
@@ -583,13 +581,25 @@ void DeepAnalogy::ComputeAnn() {
 			avg_vote << <blocksPerGridAB, threadsPerBlockAB >> >(ann_device_AB, data_BP[curr_layer], target, params_device_AB);
 			deconv(&classifier_A, params.layers[curr_layer], target, data_A_size[curr_layer], params.layers[next_layer], data_AP[next_layer], data_A_size[next_layer]);
 			cudaFree(target);
-
+			cout << "Saving correspondence AB..."<< ".\n";
+			cout << target;
+			// corr_AB = reconstruct_avg(img_AL, img_BPL, target, sizes[curr_layer]);
+			// cv::resize(corr_AB, out, Size(), (float)ori_A_cols / cur_A_cols, (float)ori_A_rows / cur_A_rows, INTER_CUBIC);
+			// sprintf(fname, "corr_AB.png");
+			// imwrite(path_output + fname, out);
+		
 			num1 = data_B_size[curr_layer].channel*data_B_size[curr_layer].width*data_B_size[curr_layer].height;
 			num2 = data_B_size[next_layer].channel*data_B_size[next_layer].width*data_B_size[next_layer].height;
 			cudaMalloc(&target, num1 * sizeof(float));
 			avg_vote << <blocksPerGridBA, threadsPerBlockBA >> >(ann_device_BA, data_A[curr_layer], target, params_device_BA);
 			deconv(&classifier_B, params.layers[curr_layer], target, data_B_size[curr_layer], params.layers[next_layer], data_B[next_layer], data_B_size[next_layer]);
 			cudaFree(target);
+			cout << "Saving correspondence BA..."<< ".\n";
+			cout << target;
+			// corr_BA = reconstruct_avg(img_BPL, img_AL, target, sizes[curr_layer]);
+			// cv::resize(corr_BA, out, Size(), (float)ori_BP_cols / cur_BP_cols, (float)ori_BP_rows / cur_BP_rows, INTER_CUBIC);
+			// sprintf(fname, "corr_BA.png");
+			// imwrite(path_output + fname, out);
 
 		}
 

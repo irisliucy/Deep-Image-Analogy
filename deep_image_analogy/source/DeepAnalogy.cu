@@ -470,8 +470,12 @@ void DeepAnalogy::ComputeAnn() {
 		patchmatch << <blocksPerGridAB, threadsPerBlockAB >> >(Ndata_AP, Ndata_BP, Ndata_A, Ndata_B, ann_device_AB, annd_device_AB, params_device_AB);
 		patchmatch << <blocksPerGridBA, threadsPerBlockBA >> >(Ndata_B, Ndata_A, Ndata_BP, Ndata_AP, ann_device_BA, annd_device_BA, params_device_BA);
 		
-		cudaMemcpy(ann_host_AB, ann_device_AB, ann_size_AB * sizeof(unsigned int), cudaMemcpyDeviceToHost);
-		cudaMemcpy(ann_host_BA, ann_device_BA, ann_size_BA * sizeof(unsigned int), cudaMemcpyDeviceToHost);
+		cudaFree(Ndata_A);
+		cudaFree(Ndata_AP);
+		cudaFree(Ndata_B);
+		cudaFree(Ndata_BP);
+		cudaFree(response_A);
+		cudaFree(response_BP);
 
 		// TEST: Output correspondence 
 		cout << "Saving correspondence AB..."<< ".\n";
@@ -486,12 +490,6 @@ void DeepAnalogy::ComputeAnn() {
 		sprintf(fname, "corr_BA.png");
 		imwrite(path_output + fname, out);
 
-		cudaFree(Ndata_A);
-		cudaFree(Ndata_AP);
-		cudaFree(Ndata_B);
-		cudaFree(Ndata_BP);
-		cudaFree(response_A);
-		cudaFree(response_BP);
 
 		//deconv
 		if (curr_layer < numlayer - 2)

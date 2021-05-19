@@ -1,5 +1,3 @@
-
-
 # Deep Image Analogy
 
 The major contributors of this repository include [Jing Liao](https://liaojing.github.io/html/index.html), [Yuan Yao](http://yuanyao.info/), [Lu Yuan](http://www.lyuan.org/), [Gang Hua](http://www.ganghua.org/) and [Sing Bing Kang](http://www.singbingkang.com/publications/) at Microsoft Research.
@@ -10,25 +8,25 @@ The major contributors of this repository include [Jing Liao](https://liaojing.g
 
 **Deep Image Analogy** is initially described in a [SIGGRAPH 2017 paper](https://arxiv.org/abs/1705.01088)
 
-
 ![image](https://github.com/msracver/Deep-Image-Analogy/blob/master/windows/deep_image_analogy/example/readme/teaser.png)
-
 
 ## Disclaimer
 
 This is an official C++ combined with CUDA implementation of [Deep Image Analogy](https://arxiv.org/abs/1705.01088). It is worth noticing that:
+
 - Our codes are based on [Caffe](https://github.com/Microsoft/caffe).
 - Our codes only have been tested on Windows 10, Windows Server 2012 R2 and Ubuntu with CUDA 8 or 7.5.
 - Our codes only have been tested on several Nvidia GPU: Titan X, Titan Z, K40, GTX770.
 - The size of input image is limited, mostly should not be large than 700x500 if you use 1.0 for parameter **ratio**.
 
-
 ## License
 
-© Microsoft, 2017. Licensed under an  BSD 2-Clause license.
+© Microsoft, 2017. Licensed under an BSD 2-Clause license.
 
 ## Citation
+
 If you find **Deep Image Analogy** (include deep patchmatch) helpful for your research, please consider citing:
+
 ```
   @article{liao2017visual,
     title={Visual Attribute Transfer through Deep Image Analogy},
@@ -43,6 +41,7 @@ If you find **Deep Image Analogy** (include deep patchmatch) helpful for your re
 ### Photo to Style
 
 One major application of our code is to transfer the style from a painting to a photo.
+
 <div>
 <img src="https://github.com/msracver/Deep-Image-Analogy/blob/master/windows/deep_image_analogy/example/readme/p2s1.png"/>
 <img src="https://github.com/msracver/Deep-Image-Analogy/blob/master/windows/deep_image_analogy/example/readme/p2s2.png"/>
@@ -78,15 +77,15 @@ It can do color transfer between two photos, such as generating time lapse.
 ### Configure & Build
 
 - Install dependencies for building Caffe. Just follow the tutorial from [Caffe](http://caffe.berkeleyvision.org/).
-- Use configuration script by typing ```sh scripts/config_deep_image_analogy.sh```.
-- Modify the CUDA path in ```Makefile.config.example``` and rename it to ```Makefile.config```.
-- Compile Caffe, make sure you installed all the dependencies before. Just type ```make all```.
-- Compile deep_image_analogy by ```sh scripts/make_deep_image_analogy.sh```.
-- Add libraries built by Caffe into ```LD_LIBRARY_PATH``` by ```export LD_LIBRARY_PATH="./build/lib"```.
+- Use configuration script by typing `sh scripts/config_deep_image_analogy.sh`.
+- Modify the CUDA path in `Makefile.config.example` and rename it to `Makefile.config`.
+- Compile Caffe, make sure you installed all the dependencies before. Just type `make all`.
+- Compile deep_image_analogy by `sh scripts/make_deep_image_analogy.sh`.
+- Add libraries built by Caffe into `LD_LIBRARY_PATH` by `export LD_LIBRARY_PATH="./build/lib"`.
 
 ### Demo
 
-Open ```main.cpp``` in ```deep_image_analogy/source/``` to see how to run a demo. You need to set several parameters which have been mentioned in the paper. To be more specific, you need to set
+Open `main.cpp` in `deep_image_analogy/source/` to see how to run a demo. You need to set several parameters which have been mentioned in the paper. To be more specific, you need to set
 
 - **path_model**, where the VGG-19 model is.
 - **path_A**, the input image A.
@@ -98,6 +97,7 @@ Open ```main.cpp``` in ```deep_image_analogy/source/``` to see how to run a demo
 - **Flag of WLS Filter**, if you are trying to do photo style transfer, we recommend to switch this on to keep the structure of original photo.
 
 To run the demo, just type:
+
 ```
 ./demo deep_image_analogy/models/ deep_image_analogy/demo/content.png deep_image_analogy/demo/style.png deep_image_analogy/demo/output/ 0 0.5 2 0
 ```

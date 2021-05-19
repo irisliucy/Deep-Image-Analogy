@@ -464,10 +464,27 @@ void DeepAnalogy::ComputeAnn() {
 		norm(Ndata_AP, data_AP[curr_layer], NULL, data_A_size[curr_layer]);
 		norm(Ndata_B, data_B[curr_layer], NULL, data_B_size[curr_layer]);
 
+		Mat out, corr_AB, corr_BA; 
 		//patchmatch
 		cout << "Finding nearest neighbor field using PatchMatch Algorithm at layer:" << params.layers[curr_layer] << ".\n";
 		patchmatch << <blocksPerGridAB, threadsPerBlockAB >> >(Ndata_AP, Ndata_BP, Ndata_A, Ndata_B, ann_device_AB, annd_device_AB, params_device_AB);
 		patchmatch << <blocksPerGridBA, threadsPerBlockBA >> >(Ndata_B, Ndata_A, Ndata_BP, Ndata_AP, ann_device_BA, annd_device_BA, params_device_BA);
+		
+		cudaMemcpy(ann_host_AB, ann_device_AB, ann_size_AB * sizeof(unsigned int), cudaMemcpyDeviceToHost);
+		cudaMemcpy(ann_host_BA, ann_device_BA, ann_size_BA * sizeof(unsigned int), cudaMemcpyDeviceToHost);
+
+		// TEST: Output correspondence 
+		cout << "Saving correspondence AB..."<< ".\n";
+		corr_AB = reconstruct_avg(img_AL, img_BPL, ann_device_AB, sizes[curr_layer]);
+		cv::resize(corr_AB, out, Size(), (float)ori_A_cols / cur_A_cols, (float)ori_A_rows / cur_A_rows, INTER_CUBIC);
+		sprintf(fname, "corr_AB.png");
+		imwrite(path_output + fname, out);
+		
+		cout << "Saving correspondence BA..."<< ".\n";
+		corr_BA = reconstruct_avg(img_BPL, img_AL, ann_device_BA, sizes[curr_layer]);
+		cv::resize(corr_BA, out, Size(), (float)ori_BP_cols / cur_BP_cols, (float)ori_BP_rows / cur_BP_rows, INTER_CUBIC);
+		sprintf(fname, "corr_BA.png");
+		imwrite(path_output + fname, out);
 
 		cudaFree(Ndata_A);
 		cudaFree(Ndata_AP);

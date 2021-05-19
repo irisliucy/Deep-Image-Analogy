@@ -483,12 +483,14 @@ void DeepAnalogy::ComputeAnn() {
 		cv::resize(corr_AB, out, Size(), (float)ori_A_cols / cur_A_cols, (float)ori_A_rows / cur_A_rows, INTER_CUBIC);
 		sprintf(fname, "corr_AB.png");
 		imwrite(path_output + fname, out);
+		cudaFree(out);
 		
 		cout << "Saving correspondence BA..."<< ".\n";
 		corr_BA = reconstruct_avg(img_BPL, img_AL, ann_device_BA, sizes[curr_layer]);
 		cv::resize(corr_BA, out, Size(), (float)ori_BP_cols / cur_BP_cols, (float)ori_BP_rows / cur_BP_rows, INTER_CUBIC);
 		sprintf(fname, "corr_BA.png");
 		imwrite(path_output + fname, out);
+		udaFree(out);
 
 
 		//deconv

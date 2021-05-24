@@ -480,8 +480,9 @@ void DeepAnalogy::ComputeAnn() {
 		Mat out; 
 		cout << "Saving correspondence AB...";
 		// corr_AB = reconstruct_avg(img_AL, img_BPL, ann_device_AB, sizes[curr_layer]);
-		cv::resize(response1, out, Size(), (float)ori_A_cols / cur_A_cols, (float)ori_A_rows / cur_A_rows, INTER_CUBIC);
-		sprintf(fname, "Ndata_AP.png");
+		// corr_AB = reconstruct_avg(img_AL, img_BPL, response1, sizes[curr_layer]);
+		cv::resize(response_byte1, out, Size(), (float)ori_A_cols / cur_A_cols, (float)ori_A_rows / cur_A_rows, INTER_CUBIC);
+		sprintf(fname, "corr_AB.png");
 		imwrite(path_output + fname, out);
 		
 		// cout << "Saving correspondence BA..."<< ".\n";
@@ -581,8 +582,8 @@ void DeepAnalogy::ComputeAnn() {
 			avg_vote << <blocksPerGridAB, threadsPerBlockAB >> >(ann_device_AB, data_BP[curr_layer], target, params_device_AB);
 			deconv(&classifier_A, params.layers[curr_layer], target, data_A_size[curr_layer], params.layers[next_layer], data_AP[next_layer], data_A_size[next_layer]);
 			cudaFree(target);
-			cout << "Saving correspondence AB..."<< ".\n";
-			cout << target;
+			// cout << "Saving correspondence AB..."<< ".\n";
+			// cout << target;
 			// corr_AB = reconstruct_avg(img_AL, img_BPL, target, sizes[curr_layer]);
 			// cv::resize(corr_AB, out, Size(), (float)ori_A_cols / cur_A_cols, (float)ori_A_rows / cur_A_rows, INTER_CUBIC);
 			// sprintf(fname, "corr_AB.png");
@@ -594,8 +595,8 @@ void DeepAnalogy::ComputeAnn() {
 			avg_vote << <blocksPerGridBA, threadsPerBlockBA >> >(ann_device_BA, data_A[curr_layer], target, params_device_BA);
 			deconv(&classifier_B, params.layers[curr_layer], target, data_B_size[curr_layer], params.layers[next_layer], data_B[next_layer], data_B_size[next_layer]);
 			cudaFree(target);
-			cout << "Saving correspondence BA..."<< ".\n";
-			cout << target;
+			// cout << "Saving correspondence BA..."<< ".\n";
+			// cout << target;
 			// corr_BA = reconstruct_avg(img_BPL, img_AL, target, sizes[curr_layer]);
 			// cv::resize(corr_BA, out, Size(), (float)ori_BP_cols / cur_BP_cols, (float)ori_BP_rows / cur_BP_rows, INTER_CUBIC);
 			// sprintf(fname, "corr_BA.png");

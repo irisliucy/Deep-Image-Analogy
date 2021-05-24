@@ -478,9 +478,9 @@ void DeepAnalogy::ComputeAnn() {
 
 		// TEST: Output correspondence 
 		Mat out; 
-		cout << "Saving correspondence AB..."<< ".\n";
+		cout << "Saving correspondence AB...";
 		// corr_AB = reconstruct_avg(img_AL, img_BPL, ann_device_AB, sizes[curr_layer]);
-		cv::resize(Ndata_AP, out, Size(), (float)ori_A_cols / cur_A_cols, (float)ori_A_rows / cur_A_rows, INTER_CUBIC);
+		cv::resize(response1, out, Size(), (float)ori_A_cols / cur_A_cols, (float)ori_A_rows / cur_A_rows, INTER_CUBIC);
 		sprintf(fname, "Ndata_AP.png");
 		imwrite(path_output + fname, out);
 		

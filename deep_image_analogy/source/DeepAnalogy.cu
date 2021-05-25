@@ -477,7 +477,7 @@ void DeepAnalogy::ComputeAnn() {
 		cudaFree(response_BP);
 
 		// TEST: Output correspondence 
-		Mat out; 
+		Mat out, corrAB; 
 		cout << "Saving correspondence AB...";
 		// corr_AB = reconstruct_avg(img_AL, img_BPL, ann_device_AB, sizes[curr_layer]);
 		// corr_AB = reconstruct_avg(img_AL, img_BPL, response1, sizes[curr_layer]);
@@ -658,8 +658,8 @@ void DeepAnalogy::ComputeAnn() {
 		cudaMemcpy(ann_host_BA, ann_device_BA, ann_size_BA * sizeof(unsigned int), cudaMemcpyDeviceToHost);
 		//free space in device, only need to free pa and pb which are created temporarily
 		//image downBAale
-		Mat flow, result_AB, result_BA, err, out, normal;
-
+		Mat flow, result_AB, result_BA, err, out, normal, ann_AB;
+		
 		flow = reconstruct_dflow(img_AL, img_BPL, ann_host_AB, sizes[curr_layer]);
 		result_AB = reconstruct_avg(img_AL, img_BPL, ann_host_AB, sizes[curr_layer]);
 
@@ -672,6 +672,11 @@ void DeepAnalogy::ComputeAnn() {
 
 		cv::resize(result_BA, out, Size(), (float)ori_BP_cols / cur_BP_cols, (float)ori_BP_rows / cur_BP_rows, INTER_CUBIC);
 		sprintf(fname, "resultBA.png");
+		imwrite(path_output + fname, out);
+
+		ann_host_AB.convertTo(ann_AB, CV_8UC1, 255);
+		cv::resize(ann_AB, out, Size(), (float)ori_A_cols / cur_A_cols, (float)ori_A_rows / cur_A_rows, INTER_CUBIC);
+		sprintf(fname, "ann_host_AB.png");
 		imwrite(path_output + fname, out);
 
 		if (photoTransfer)
